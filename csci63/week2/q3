@@ -1,0 +1,33 @@
+#!/usr/bin/python
+__author__ = 'Ryan Tischer'
+
+#FILENAME.py: Description of program or code.
+#Use at your own risk
+#Contact @ryantischer
+
+from py2neo import Graph, Node, Relationship, NodeSelector
+import json
+
+graph = Graph("http://localhost:7474/db/data/")
+
+graph = Graph()
+selector = NodeSelector(graph)
+
+#list of movies that KR
+query2 = '''
+MATCH (keanu:Actor { name: 'Keanu Reeves'
+})-[:ACTS_IN]->(movie:Movie),
+(name:Actor)-[:ACTS_IN]->(movie)
+RETURN movie.title, name.name
+'''
+print json.dumps(graph.run(query2).data(), sort_keys=True,indent=4, separators=(',', ': '))
+
+
+query = '''
+MATCH (keanu:Actor { name: 'Keanu Reeves'
+})-[:ACTS_IN]->(movie:Movie),
+(name:Director)-[:Directs]->(movie)
+RETURN movie.title, name.name
+'''
+
+print json.dumps(graph.run(query).data(), sort_keys=True,indent=4, separators=(',', ': '))
